@@ -1,5 +1,24 @@
 services:
+  mongodb:
+    image: mongo
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: gbs
+      MONGO_INITDB_ROOT_PASSWORD: geheim
+
   webapi:
     build: ./WebApi
     ports:
       - "5001:5001"
+    depends_on:
+      - mongodb
+    environment:
+      - ASPNETCORE_URLS=http://+:5001
+      - DatabaseSettings__ConnectionString=mongodb://gbs:geheim@mongodb:27017
+
+volumes:
+  mongo-data:
