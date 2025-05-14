@@ -10,10 +10,11 @@ var app = builder.Build();
 
 app.MapGet("/", () => "Minimal API Version 1.0");
 
-app.MapGet("/check", (Microsoft.Extensions.Options.IOptions<DatabaseSettings> options) =>
+app.MapGet("/check", (IOptions<DatabaseSettings> options) =>
 {
     var mongoDbConnectionString = options.Value.ConnectionString;
 
+    var error = "Fehler beim Zugriff auf MongoDB";
     try
     {
         var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(5));
@@ -27,11 +28,11 @@ app.MapGet("/check", (Microsoft.Extensions.Options.IOptions<DatabaseSettings> op
     }
     catch (TimeoutException ex)
     {
-        return Results.Problem("Fehler: Timeout beim Zugriff auf MongoDB: " + ex.Message);
+        return Results.Problem(error + " (timout): " + ex.Message);
     }
     catch (Exception ex)
     {
-        return Results.Problem("Fehler beim Zugriff auf MongoDB: " + ex.Message);
+        return Results.Problem(error + " :" + ex.Message);
     }
 });
 
