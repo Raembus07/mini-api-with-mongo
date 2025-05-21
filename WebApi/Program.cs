@@ -2,6 +2,15 @@ using MongoDB.Driver;
 using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
 
 var movieDatabaseConfigSection = builder.Configuration.GetSection("DatabaseSettings");
 builder.Services.Configure<DatabaseSettings>(movieDatabaseConfigSection);
@@ -9,6 +18,8 @@ builder.Services.Configure<DatabaseSettings>(movieDatabaseConfigSection);
 builder.Services.AddSingleton<IMovieService, MongoMovieService>();
 
 var app = builder.Build();
+
+app.UseCors();
 
 app.MapGet("/", () => "Minimal API Version 1.0");
 
