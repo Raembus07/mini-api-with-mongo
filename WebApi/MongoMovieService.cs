@@ -4,12 +4,14 @@ public class MongoMovieService : IMovieService
 {
     private readonly IMongoCollection<Movie> _movieCollection;
     private readonly IOptions<DatabaseSettings> options;
-    List<Movie> movies = new List<Movie>();
 
 
     public MongoMovieService(IOptions<DatabaseSettings> options)
     {
         this.options = options;
+        var client = new MongoClient(options.Value.ConnectionString);
+        var database = client.GetDatabase("movies"); // Passe ggf. den DB-Namen an
+        _movieCollection = database.GetCollection<Movie>("movies");
     }
     public IResult Check()
     {
@@ -39,56 +41,50 @@ public class MongoMovieService : IMovieService
 
     public IResult Get()
     {
+        var movies = _movieCollection.Find(_ => true).ToList();
         return Results.Ok(movies);
     }
 
     public IResult Create(Movie movie)
     {
-        if (movies.Any(m => m.Id == movie.Id))
+        if (_movieCollection.Find(m => m.Id == movie.Id).Any())
         {
             return Results.Conflict($"Movie with id {movie.Id} already exists.");
         }
-
-        movies.Add(movie);
+        _movieCollection.InsertOne(movie);
         return Results.Ok(movie);
     }
 
     public IResult Get(string id)
     {
-        var movie = movies.FirstOrDefault(m => m.Id == id);
+        var movie = _movieCollection.Find(m => m.Id == id).FirstOrDefault();
         return movie is not null ? Results.Ok(movie) : Results.NotFound();
     }
 
     public IResult Update(string id, Movie updatedMovie)
     {
-        var index = movies.FindIndex(m => m.Id == id);
-        if (index == -1)
+        var result = _movieCollection.ReplaceOne(m => m.Id == id, updatedMovie);
+        if (result.MatchedCount == 0)
             return Results.NotFound();
-
-        movies[index] = updatedMovie;
         return Results.Ok(updatedMovie);
     }
 
     public IResult Delete(string id)
     {
-        var movie = movies.FirstOrDefault(m => m.Id == id);
-        if (movie is null)
+        var result = _movieCollection.DeleteOne(m => m.Id == id);
+        if (result.DeletedCount == 0)
             return Results.NotFound();
-
-        movies.Remove(movie);
         return Results.Ok();
     }
 
     public IResult Create(List<Movie> movies)
     {
-        foreach (var movie in movies)
+        var existingIds = _movieCollection.Find(m => movies.Select(x => x.Id).Contains(m.Id)).ToList();
+        if (existingIds.Any())
         {
-            if (this.movies.Any(m => m.Id == movie.Id))
-            {
-                return Results.Conflict($"Movie with id {movie.Id} already exists.");
-            }
-            this.movies.Add(movie);
+            return Results.Conflict($"Movie with id {string.Join(", ", existingIds.Select(m => m.Id))} already exists.");
         }
+        _movieCollection.InsertMany(movies);
         return Results.Ok(movies);
     }
 

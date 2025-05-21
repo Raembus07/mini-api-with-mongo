@@ -20,37 +20,37 @@ app.MapGet("/check", (IMovieService movieService) =>
 // POST – Insert Movie
 app.MapPost("/api/movies", (IMovieService service, Movie movie) =>
 {
-    return service.InsertMovie(movie);
+    return service.Create(movie);
 });
 
 // GET - Get all movies
 app.MapGet("/api/movies", (IMovieService service) =>
 {
-    return service.GetAllMovies();
+    return service.Get();
 });
 
 // GET{id} - Get movie by id
 app.MapGet("/api/movies/{id}", (IMovieService service, string id) =>
 {
-    return service.GetMovieById(id);
+    return service.Get(id);
 });
 
 //PUT{id} - Update movie by id
 app.MapPut("/api/movies/{id}", (IMovieService service, string id, Movie updatedMovie) =>
 {
-    return service.UpdateMovie(id, updatedMovie);
+    return service.Update(id, updatedMovie);
 });
 
 //DELETE{id} - Delete movie by id
 app.MapDelete("/api/movies/{id}", (IMovieService service, string id) =>
 {
-    return service.DeleteMovie(id);
+    return service.Delete(id);
 });
 
 // POST - Insert bulk movies
 app.MapPost("/api/movies/bulk", (IMovieService service, List<Movie> movies) =>
 {
-    return service.InsertBulkMovies(movies);
+    return service.Create(movies);
 });
 
 
