@@ -20,11 +20,22 @@ services:
       - ASPNETCORE_URLS=http://+:5001
       - DatabaseSettings__ConnectionString=mongodb://gbs:geheim@mongodb:27017
 
-  frontend:
-    build: ./mini-frontend-m347
-    container_name: frontend
-    ports:
-      - "3000:80"
+#  frontend:
+#    build: ./mini-frontend-m347
+#    container_name: frontend
+#    ports:
+#      - "3000:80"
+# 
+#  nginx:
+#    image: nginx:alpine
+#    container_name: nginx
+#    ports:
+#      - "8080:80"
+#    volumes:
+#      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+#    depends_on:
+#      - webapi
+#      - frontend
 
 volumes:
-  mongo-data:
+    mongo-data:
