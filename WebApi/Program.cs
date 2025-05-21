@@ -49,28 +49,20 @@ app.MapPost("/api/movies", (Movie movie) =>
     return Results.Ok(movie);
 });
 
-app.MapPost("/api/movies", (Movie movie) =>
-{
-    if (movies.Any(m => m.Id == movie.Id))
-    {
-        return Results.Conflict($"Movie with id {movie.Id} already exists.");
-    }
-
-    movies.Add(movie);
-    return Results.Ok(movie);
-});
-
+// GET - Get all movies
 app.MapGet("/api/movies", () =>
 {
     return Results.Ok(movies);
 });
 
+// GET{id} - Get movie by id
 app.MapGet("/api/movies/{id}", (string id) =>
 {
     var movie = movies.FirstOrDefault(m => m.Id == id);
     return movie is not null ? Results.Ok(movie) : Results.NotFound();
 });
 
+//PUT{id} - Update movie by id
 app.MapPut("/api/movies/{id}", (string id, Movie updatedMovie) =>
 {
     var index = movies.FindIndex(m => m.Id == id);
@@ -81,6 +73,7 @@ app.MapPut("/api/movies/{id}", (string id, Movie updatedMovie) =>
     return Results.Ok(updatedMovie);
 });
 
+//DELETE{id} - Delete movie by id
 app.MapDelete("/api/movies/{id}", (string id) =>
 {
     var movie = movies.FirstOrDefault(m => m.Id == id);
@@ -89,6 +82,20 @@ app.MapDelete("/api/movies/{id}", (string id) =>
 
     movies.Remove(movie);
     return Results.Ok();
+});
+
+app.MapPost("/api/movies/bulk", (List<Movie> movies) =>
+{
+    foreach (var movie in movies)
+    {
+        if (movies.Any(m => m.Id == movie.Id))
+        {
+            return Results.Conflict($"Movie with id {movie.Id} already exists.");
+        }
+    }
+
+    movies.AddRange(movies);
+    return Results.Ok(movies);
 });
 
 

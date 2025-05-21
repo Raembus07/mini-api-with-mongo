@@ -25,7 +25,7 @@ services:
 #    container_name: frontend
 #    ports:
 #      - "3000:80"
-# 
+
 #  nginx:
 #    image: nginx:alpine
 #    container_name: nginx
@@ -38,4 +38,4 @@ services:
 #      - frontend
 
 volumes:
-    mongo-data:
+  mongo-data:

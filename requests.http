@@ -1,0 +1,63 @@
+### POST - Movie erstellen
+POST http://localhost:5001/api/movies
+Content-Type: application/json
+
+{
+  "id": "1",
+  "title": "Asterix und Obelix",
+  "year": 1999,
+  "summary": "Ein gallisches Abenteuer",
+  "actors": ["Asterix", "Obelix"]
+}
+
+###
+
+### GET - Alle Movies abfragen
+GET http://localhost:5001/api/movies
+
+###
+
+### GET - Movie mit ID 1 abfragen
+GET http://localhost:5001/api/movies/1
+
+###
+
+### PUT - Movie mit ID 1 aktualisieren
+PUT http://localhost:5001/api/movies/1
+Content-Type: application/json
+
+{
+  "id": "1",
+  "title": "Asterix in Amerika",
+  "year": 2001,
+  "summary": "Ein neues Abenteuer",
+  "actors": ["Asterix", "Obelix", "Miraculix"]
+}
+
+###
+
+### DELETE - Movie mit ID 1 löschen
+DELETE http://localhost:5001/api/movies/1
+
+###
+
+### POST - Mehrere Movies auf einmal erstellen
+POST http://localhost:5001/api/movies/bulk
+Content-Type: application/json
+
+[
+  {
+    "id": "5",
+    "title": "The Dark Knight",
+    "year": 2008,
+    "summary": "Batman gegen Joker.",
+    "actors": ["Christian Bale", "Heath Ledger"]
+  },
+  {
+    "id": "6",
+    "title": "Gladiator",
+    "year": 2000,
+    "summary": "Ein römischer Held.",
+    "actors": ["Russell Crowe", "Joaquin Phoenix"]
+  }
+]
