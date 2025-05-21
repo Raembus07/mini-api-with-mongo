@@ -23,7 +23,7 @@ GET http://localhost:5001/api/movies/1
 ###
 
 ### PUT - Movie mit ID 1 aktualisieren
-PUT http://localhost:5001/api/movies/1
+PUT http://localhost:5001/api/movies/2
 Content-Type: application/json
 
 {
